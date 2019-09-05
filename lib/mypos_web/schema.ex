@@ -9,9 +9,14 @@ defmodule MyposWeb.Schema do
   end
 
   mutation do
-    field :create_category_item, :category do
+    field :create_category_item, :category_item_result do
       arg(:input, :category_item_input)
       resolve(&Resolvers.Product.category_create/3)
+    end
+
+    field(:delete_category_item, :category_item_result) do
+      arg(:id, non_null(:id))
+      resolve(&Resolvers.Product.category_delete/3)
     end
   end
 end
