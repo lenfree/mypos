@@ -13,10 +13,15 @@ defmodule MyposWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", MyposWeb do
-    pipe_through :browser
+  scope "/" do
+    pipe_through(:api)
+    forward("/api", Absinthe.Plug, schema: MyposWeb.Schema)
 
-    get "/", PageController, :index
+    forward("/graphiql", Absinthe.Plug.GraphiQL,
+      schema: MyposWeb.Schema,
+      interface: :simple,
+      socket: MyposWeb.UserSocket
+    )
   end
 
   # Other scopes may use custom stacks.

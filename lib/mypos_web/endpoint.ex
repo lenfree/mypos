@@ -1,9 +1,8 @@
 defmodule MyposWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :mypos
+  use Absinthe.Phoenix.Endpoint
 
-  socket "/socket", MyposWeb.UserSocket,
-    websocket: true,
-    longpoll: false
+  socket("/socket", MyposWeb.UserSocket)
 
   # Serve at "/" the static files from "priv/static" directory.
   #
