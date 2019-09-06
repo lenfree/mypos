@@ -1,4 +1,4 @@
-defmodule MyposWeb.Schema.Mutation.CategoryCreateItemTest do
+defmodule MyposWeb.Schema.Mutation.CategoryItemCreateTest do
   use MyposWeb.ConnCase, async: true
   alias Mypos.{Product}
 

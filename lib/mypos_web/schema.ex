@@ -1,11 +1,13 @@
 defmodule MyposWeb.Schema do
   use Absinthe.Schema
   alias MyposWeb.Resolvers
-  import_types(__MODULE__.CategoryTypes)
+  import_types(__MODULE__.ProductTypes)
 
   @desc "The list of categories"
   query do
     import_fields(:category_queries)
+    import_fields(:item_queries)
+    import_fields(:product_search)
   end
 
   mutation do
@@ -24,5 +26,36 @@ defmodule MyposWeb.Schema do
       arg(:input, :category_item_input)
       resolve(&Resolvers.Product.category_update/3)
     end
+
+    field :create_item, :item_result do
+      arg(:input, :item_input)
+      resolve(&Resolvers.Product.item_create/3)
+    end
+
+    field(:update_item, :item_result) do
+      arg(:id, non_null(:id))
+      arg(:input, :item_input)
+      resolve(&Resolvers.Product.item_update/3)
+    end
+
+    field(:delete_item, :item_result) do
+      arg(:id, non_null(:id))
+      resolve(&Resolvers.Product.item_delete/3)
+    end
+  end
+
+  scalar :date do
+    parse(fn input ->
+      with %Absinthe.Blueprint.Input.String{value: value} <- input,
+           {:ok, date} <- Date.from_iso8601(value) do
+        {:ok, date}
+      else
+        _ -> :error
+      end
+    end)
+
+    serialize(fn date ->
+      Date.to_iso8601(date)
+    end)
   end
 end

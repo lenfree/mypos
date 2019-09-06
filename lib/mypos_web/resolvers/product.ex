@@ -43,6 +43,46 @@ defmodule MyposWeb.Resolvers.Product do
     end
   end
 
+  def item_list(_, _args, _) do
+    {:ok, %{items: Product.list_items()}}
+  end
+
+  def item_create(_, %{input: params}, _) do
+    case Product.create_item(params) do
+      {:ok, item} ->
+        {
+          :ok,
+          %{item: item}
+        }
+
+      {:error, changeset} ->
+        {:ok, %{errors: transform_errors(changeset)}}
+    end
+  end
+
+  def item_update(_, %{id: id, input: params}, _) do
+    item = Product.get_item!(id)
+
+    case Product.update_item(item, params) do
+      {:ok, item} ->
+        {:ok, %{item: item}}
+
+      {:error, changeset} ->
+        {:ok, %{errors: transform_errors(changeset)}}
+    end
+  end
+  def item_delete(_, %{id: id}, _) do
+    item = Product.get_item!(id)
+
+    case Product.delete_item(item) do
+      {:ok, item} ->
+        {:ok, %{item: item}}
+
+      {:error, changeset} ->
+        {:ok, %{errors: transform_errors(changeset)}}
+    end
+  end
+
   def transform_errors(changeset) do
     changeset
     |> Ecto.Changeset.traverse_errors(&format_error/1)
@@ -55,5 +95,9 @@ defmodule MyposWeb.Resolvers.Product do
     Enum.reduce(opts, msg, fn {key, value}, acc ->
       String.replace(acc, "%{#{key}}", to_string(value))
     end)
+  end
+
+  def search(_, %{matching: term}, _ ) do
+    {:ok, Product.search(term)}
   end
 end
