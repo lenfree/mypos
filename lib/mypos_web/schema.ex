@@ -18,5 +18,11 @@ defmodule MyposWeb.Schema do
       arg(:id, non_null(:id))
       resolve(&Resolvers.Product.category_delete/3)
     end
+
+    field(:update_category_item, :category_item_result) do
+      arg(:id, non_null(:id))
+      arg(:input, :category_item_input)
+      resolve(&Resolvers.Product.category_update/3)
+    end
   end
 end

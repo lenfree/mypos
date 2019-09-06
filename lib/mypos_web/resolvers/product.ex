@@ -31,6 +31,18 @@ defmodule MyposWeb.Resolvers.Product do
     end
   end
 
+  def category_update(_, %{id: id, input: params}, _) do
+    category = Product.get_category!(id)
+
+    case Product.update_category(category, params) do
+      {:ok, category_item} ->
+        {:ok, %{category_item: category_item}}
+
+      {:error, changeset} ->
+        {:ok, %{errors: transform_errors(changeset)}}
+    end
+  end
+
   def transform_errors(changeset) do
     changeset
     |> Ecto.Changeset.traverse_errors(&format_error/1)
