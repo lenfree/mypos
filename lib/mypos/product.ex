@@ -116,6 +116,7 @@ defmodule Mypos.Product do
   """
   def list_items do
     Repo.all(Item)
+    |> Repo.preload(:category)
   end
 
   @doc """
