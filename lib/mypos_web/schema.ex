@@ -2,6 +2,7 @@ defmodule MyposWeb.Schema do
   use Absinthe.Schema
   alias MyposWeb.Resolvers
   import_types(__MODULE__.ProductTypes)
+  import_types(__MODULE__.OrderingTypes)
 
   @desc "The list of categories"
   query do
@@ -42,6 +43,11 @@ defmodule MyposWeb.Schema do
       arg(:id, non_null(:id))
       resolve(&Resolvers.Product.item_delete/3)
     end
+
+    field(:place_order, :order_result) do
+      arg(:input, non_null(:place_order_input))
+      resolve(&Resolvers.Ordering.create_order/3)
+    end
   end
 
   scalar :date do
@@ -57,5 +63,16 @@ defmodule MyposWeb.Schema do
     serialize(fn date ->
       Date.to_iso8601(date)
     end)
+  end
+
+  scalar :decimal do
+    parse fn
+      %{value: value}, _ ->
+      Decimal.parse(value)
+
+    _, _ -> :error
+    end
+
+    serialize &to_string/1
   end
 end

@@ -6,7 +6,7 @@ defmodule Mypos.Product.Item do
     field :added_on, :date
     field :description, :string
     field :name, :string
-    field :price, :integer
+    field :price, :decimal
     belongs_to(:category, Mypos.Product.Category)
 
     timestamps()

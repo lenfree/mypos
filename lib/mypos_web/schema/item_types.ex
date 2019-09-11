@@ -47,7 +47,7 @@ defmodule MyposWeb.Schema.ProductTypes do
     field(:id, :id)
     field(:name, :string)
     field(:description, :string)
-    field(:price, :integer)
+    field(:price, :decimal)
     field(:added_on, :date)
 
     field(:category, :category_item, resolve: assoc(:category))
@@ -66,7 +66,7 @@ defmodule MyposWeb.Schema.ProductTypes do
   input_object :item_input do
     field(:name, non_null(:string))
     field(:description, :string)
-    field(:price, :integer)
+    field(:price, :decimal)
     field(:category_id, non_null(:id))
   end
 
