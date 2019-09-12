@@ -4,10 +4,9 @@ defmodule Mypos.Ordering.Order do
   alias Mypos.Ordering.Order
 
   schema "orders" do
-
     field :customer_number, :integer, read_after_writes: true
     field :ordered_at, :utc_datetime, read_after_writes: true
-    field :state, :string, read_after_writes: true
+    field :state, :string, read_after_writes: true, default: "created"
     embeds_many :items, Mypos.Ordering.Item
 
     timestamps()

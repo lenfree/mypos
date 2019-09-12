@@ -1,8 +1,24 @@
 defmodule MyposWeb.Schema do
   use Absinthe.Schema
   alias MyposWeb.Resolvers
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
+  alias Mypos.Product.Category
+  alias Mypos.Product.Item
+
   import_types(__MODULE__.ProductTypes)
   import_types(__MODULE__.OrderingTypes)
+
+  def context(ctx) do
+    loader =
+      Dataloader.new()
+      |> Dataloader.add_source(Category, Mypos.Product.data())
+
+    Map.put(ctx, :loader, loader)
+  end
+
+  def plugins do
+    [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
+  end
 
   @desc "The list of categories"
   query do
@@ -66,13 +82,14 @@ defmodule MyposWeb.Schema do
   end
 
   scalar :decimal do
-    parse fn
+    parse(fn
       %{value: value}, _ ->
-      Decimal.parse(value)
+        Decimal.parse(value)
 
-    _, _ -> :error
-    end
+      _, _ ->
+        :error
+    end)
 
-    serialize &to_string/1
+    serialize(&to_string/1)
   end
 end

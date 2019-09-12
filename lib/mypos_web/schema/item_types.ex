@@ -1,7 +1,8 @@
 defmodule MyposWeb.Schema.ProductTypes do
   use Absinthe.Schema.Notation
+
   alias MyposWeb.Resolvers
-  use Absinthe.Ecto, repo: Mypos.Repo
+  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
 
   object :category_queries do
     field(:category_list, :category_items_result) do
@@ -50,7 +51,7 @@ defmodule MyposWeb.Schema.ProductTypes do
     field(:price, :decimal)
     field(:added_on, :date)
 
-    field(:category, :category_item, resolve: assoc(:category))
+    field(:category, :category_item, resolve: dataloader(Mypos.Product.Category))
   end
 
   object :items_result do
@@ -87,8 +88,8 @@ defmodule MyposWeb.Schema.ProductTypes do
       %Mypos.Product.Category{}, _ ->
         :category_item
 
-      _, _
-        -> nil
+      _, _ ->
+        nil
     end)
   end
 end

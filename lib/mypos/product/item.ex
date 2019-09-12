@@ -18,6 +18,7 @@ defmodule Mypos.Product.Item do
     |> cast(attrs, [:name, :description, :added_on, :price, :category_id])
     |> validate_required([:name, :description, :price])
     |> unique_constraint(:name)
+    |> assoc_constraint(:category)
     |> foreign_key_constraint(:category_id)
   end
 end

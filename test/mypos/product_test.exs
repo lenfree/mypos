@@ -1,5 +1,5 @@
 defmodule Mypos.ProductTest do
-  use Mypos.DataCase
+  use Mypos.DataCase, async: true
 
   alias Mypos.Product
 
@@ -65,10 +65,20 @@ defmodule Mypos.ProductTest do
   end
 
   describe "items" do
-    alias Mypos.Product.Item
+    alias Mypos.Product.{Item, Category}
 
-    @valid_attrs %{added_on: ~D[2010-04-17], description: "some description", name: "some name", price: 42}
-    @update_attrs %{added_on: ~D[2011-05-18], description: "some updated description", name: "some updated name", price: 43}
+    @valid_attrs %{
+      added_on: ~D[2010-04-17],
+      description: "some description",
+      name: "some name",
+      price: 42
+    }
+    @update_attrs %{
+      added_on: ~D[2011-05-18],
+      description: "some updated description",
+      name: "some updated name",
+      price: 43
+    }
     @invalid_attrs %{added_on: nil, description: nil, name: nil, price: nil}
 
     def item_fixture(attrs \\ %{}) do
@@ -81,8 +91,9 @@ defmodule Mypos.ProductTest do
     end
 
     test "list_items/0 returns all items" do
-      item = item_fixture()
-      assert Product.list_items() == [item]
+      category = category_fixture(%{name: "hello"})
+      item = item_fixture(%{category_id: category_fixture().id})
+      assert 1 == Enum.count(Product.list_items())
     end
 
     test "get_item!/1 returns the item with given id" do
@@ -95,7 +106,7 @@ defmodule Mypos.ProductTest do
       assert item.added_on == ~D[2010-04-17]
       assert item.description == "some description"
       assert item.name == "some name"
-      assert item.price == 42
+      assert Decimal.to_string(item.price) == "42"
     end
 
     test "create_item/1 with invalid data returns error changeset" do
@@ -108,7 +119,7 @@ defmodule Mypos.ProductTest do
       assert item.added_on == ~D[2011-05-18]
       assert item.description == "some updated description"
       assert item.name == "some updated name"
-      assert item.price == 43
+      assert Decimal.to_string(item.price) == "43"
     end
 
     test "update_item/2 with invalid data returns error changeset" do

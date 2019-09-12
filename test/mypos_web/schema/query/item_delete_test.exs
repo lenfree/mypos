@@ -3,26 +3,29 @@ defmodule MyposWeb.Schema.Mutation.ItemDeleteTest do
   alias Mypos.{Product}
 
   setup do
-    category_items = [
-      %{
-        "name" => "lunch box",
-        "description" => "kiddies lunch box"
-      },
-      %{
-        "name" => "drinks",
-        "description" => "all drinks"
-      }
-    ]
-    |> Enum.map(&Product.create_category/1)
+    category_items =
+      [
+        %{
+          "name" => "lunch box",
+          "description" => "kiddies lunch box"
+        },
+        %{
+          "name" => "drinks",
+          "description" => "all drinks"
+        }
+      ]
+      |> Enum.map(&Product.create_category/1)
 
     {:ok, category2} = List.last(category_items)
 
-    {:ok, item} = %{
-      "categoryId" => category2.id,
-      "description" => "a kind of bread",
-      "name" => "pan coco",
-      "price" => 50,
-    } |> Product.create_item
+    {:ok, item} =
+      %{
+        "categoryId" => category2.id,
+        "description" => "a kind of bread",
+        "name" => "pan coco",
+        "price" => "50"
+      }
+      |> Product.create_item()
 
     {:ok, item: item, category: category2}
   end
@@ -56,13 +59,13 @@ defmodule MyposWeb.Schema.Mutation.ItemDeleteTest do
     assert json_response(conn, 200) == %{
              "data" => %{
                "deleteItem" => %{
-                "item" => %{
-                  "category" => nil,
-                  "description" => "a kind of bread",
+                 "item" => %{
+                   "category" => nil,
+                   "description" => "a kind of bread",
                    "name" => "pan coco",
-                   "price" => 50
-                  }
-                }
+                   "price" => "50"
+                 }
+               }
              }
            }
   end

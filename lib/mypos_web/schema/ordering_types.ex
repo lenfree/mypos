@@ -1,7 +1,5 @@
 defmodule MyposWeb.Schema.OrderingTypes do
   use Absinthe.Schema.Notation
-  alias MyposWeb.Resolvers
-  use Absinthe.Ecto, repo: Mypos.Repo
 
   object :order_result do
     field :order, :order

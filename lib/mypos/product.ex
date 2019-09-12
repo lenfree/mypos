@@ -9,6 +9,14 @@ defmodule Mypos.Product do
   alias Mypos.Product.Category
   alias Mypos.Product.Item
 
+  def data() do
+    Dataloader.Ecto.new(Mypos.Repo, query: &query/2)
+  end
+
+  def query(queryable, _params) do
+    queryable
+  end
+
   @doc """
   Returns the list of categories.
 
@@ -213,5 +221,4 @@ defmodule Mypos.Product do
       )
     )
   end
-
 end

@@ -2,9 +2,8 @@ defmodule Mypos.Ordering.Item do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   embedded_schema do
-    field :price, :decimal
+    field :price, :decimal, null: false
     field :name, :string
     field :quantity, :integer
   end
