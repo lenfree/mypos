@@ -63,6 +63,14 @@ defmodule MyposWeb.Schema do
     end
   end
 
+  subscription do
+    field :new_order, :order do
+      config(fn _args, _info ->
+        {:ok, topic: "*"}
+      end)
+    end
+  end
+
   scalar :date do
     parse(fn input ->
       with %Absinthe.Blueprint.Input.String{value: value} <- input,

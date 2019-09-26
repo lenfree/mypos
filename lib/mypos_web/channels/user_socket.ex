@@ -1,6 +1,6 @@
 defmodule MyposWeb.UserSocket do
   use Phoenix.Socket
-
+  use Absinthe.Phoenix.Socket, schema: MyposWeb.Schema
   ## Channels
   # channel "room:*", MyposWeb.RoomChannel
 

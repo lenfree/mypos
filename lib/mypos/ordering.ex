@@ -50,7 +50,8 @@ defmodule Mypos.Ordering do
 
   """
   def create_order(attrs \\ %{}) do
-    attrs = Map.update(attrs, :items,  [], &build_items/1)
+    attrs = Map.update(attrs, :items, [], &build_items/1)
+
     %Order{}
     |> Order.changeset(attrs)
     |> Repo.insert()
@@ -58,10 +59,11 @@ defmodule Mypos.Ordering do
 
   defp build_items(items) do
     for item <- items do
-     product_item = Mypos.Product.get_item!(item.item_id)
+      product_item = Mypos.Product.get_item!(item.item_id)
       %{name: product_item.name, price: product_item.price, quantity: item.quantity}
     end
   end
+
   @doc """
   Updates a order.
 

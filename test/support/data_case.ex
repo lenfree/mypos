@@ -22,6 +22,7 @@ defmodule Mypos.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Mypos.DataCase
+      import Mypos.TestHelpers
     end
   end
 
