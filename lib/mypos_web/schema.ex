@@ -1,9 +1,6 @@
 defmodule MyposWeb.Schema do
   use Absinthe.Schema
   alias MyposWeb.Resolvers
-  import Absinthe.Resolution.Helpers, only: [dataloader: 1]
-  alias Mypos.Product.Category
-  alias Mypos.Product.Item
 
   import_types(__MODULE__.ProductTypes)
   import_types(__MODULE__.OrderingTypes)

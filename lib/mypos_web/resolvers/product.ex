@@ -71,6 +71,7 @@ defmodule MyposWeb.Resolvers.Product do
         {:ok, %{errors: transform_errors(changeset)}}
     end
   end
+
   def item_delete(_, %{id: id}, _) do
     item = Product.get_item!(id)
 
@@ -97,7 +98,7 @@ defmodule MyposWeb.Resolvers.Product do
     end)
   end
 
-  def search(_, %{matching: term}, _ ) do
+  def search(_, %{matching: term}, _) do
     {:ok, Product.search(term)}
   end
 end
