@@ -1,6 +1,5 @@
 defmodule MyposWeb.Schema.Subscription.NewOrderTest do
   use MyposWeb.SubscriptionCase
-  alias Mypos.Product.{Item, Category}
 
   @subscription """
     subscription {
