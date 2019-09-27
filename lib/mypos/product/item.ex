@@ -7,6 +7,7 @@ defmodule Mypos.Product.Item do
     field :description, :string
     field :name, :string
     field :price, :decimal
+    field :allergy_info, {:array, :map}
     belongs_to(:category, Mypos.Product.Category)
 
     timestamps()
@@ -15,7 +16,7 @@ defmodule Mypos.Product.Item do
   @doc false
   def changeset(item, attrs) do
     item
-    |> cast(attrs, [:name, :description, :added_on, :price, :category_id])
+    |> cast(attrs, [:name, :description, :added_on, :price, :category_id, :allergy_info])
     |> validate_required([:name, :description, :price])
     |> unique_constraint(:name)
     |> assoc_constraint(:category)

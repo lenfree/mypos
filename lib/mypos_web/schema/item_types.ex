@@ -50,8 +50,15 @@ defmodule MyposWeb.Schema.ProductTypes do
     field(:description, :string)
     field(:price, :decimal)
     field(:added_on, :date)
+    field :allergy_info, list_of(:allergy_info)
 
     field(:category, :category_item, resolve: dataloader(Mypos.Product))
+  end
+
+  object :allergy_info do
+    field :allergen, :string
+
+    field :severity, :string
   end
 
   object :items_result do
