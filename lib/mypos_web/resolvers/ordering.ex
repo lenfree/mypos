@@ -2,12 +2,8 @@ defmodule MyposWeb.Resolvers.Ordering do
   alias Mypos.Ordering
 
   def create_order(_, %{input: params}, _) do
-    case Ordering.create_order(params) do
-      {:ok, order} ->
-        {:ok, %{order: order}}
-
-      {:error, changeset} ->
-        {:ok, %{errors: transform_errors(changeset)}}
+    with {:ok, order} <- Ordering.create_order(params) do
+      {:ok, %{order: order}}
     end
   end
 
@@ -22,9 +18,6 @@ defmodule MyposWeb.Resolvers.Ordering do
              }
            ) do
       {:ok, %{order: order}}
-    else
-      {:error, changeset} ->
-        {:ok, %{errors: transform_errors(changeset)}}
     end
   end
 
@@ -39,23 +32,6 @@ defmodule MyposWeb.Resolvers.Ordering do
              }
            ) do
       {:ok, %{order: order}}
-    else
-      {:error, changeset} ->
-        {:ok, %{errors: transform_errors(changeset)}}
     end
-  end
-
-  def transform_errors(changeset) do
-    changeset
-    |> Ecto.Changeset.traverse_errors(&format_error/1)
-    |> Enum.map(fn {key, value} ->
-      %{key: key, message: value}
-    end)
-  end
-
-  def format_error({msg, opts}) do
-    Enum.reduce(opts, msg, fn {key, value}, acc ->
-      String.replace(acc, "%{#{key}}", to_string(value))
-    end)
   end
 end

@@ -51,7 +51,7 @@ defmodule MyposWeb.Schema.ProductTypes do
     field(:price, :decimal)
     field(:added_on, :date)
 
-    field(:category, :category_item, resolve: dataloader(Mypos.Product.Category))
+    field(:category, :category_item, resolve: dataloader(Mypos.Product))
   end
 
   object :items_result do

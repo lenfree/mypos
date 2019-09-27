@@ -1,6 +1,16 @@
 defmodule MyposWeb.Schema do
   use Absinthe.Schema
   alias MyposWeb.Resolvers
+  alias MyposWeb.Schema.Middleware
+  alias Mypos.Product
+
+  def middleware(middleware, _field, %{identifier: :mutation}) do
+    middleware ++ [Middleware.ChangesetErrors]
+  end
+
+  def middleware(middleware, _field, _object) do
+    middleware
+  end
 
   import_types(__MODULE__.ProductTypes)
   import_types(__MODULE__.OrderingTypes)
@@ -8,7 +18,7 @@ defmodule MyposWeb.Schema do
   def context(ctx) do
     loader =
       Dataloader.new()
-      |> Dataloader.add_source(Category, Mypos.Product.data())
+      |> Dataloader.add_source(Product, Mypos.Product.data())
 
     Map.put(ctx, :loader, loader)
   end
