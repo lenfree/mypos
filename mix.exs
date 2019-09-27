@@ -33,7 +33,7 @@ defmodule Mypos.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.0"},
+      {:phoenix, "~> 1.4"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.0"},
@@ -49,7 +49,9 @@ defmodule Mypos.MixProject do
       {:absinthe_relay, "~> 1.4.5"},
       {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},
       {:poison, "~> 2.1.0"},
-      {:dataloader, "~> 1.0.0"}
+      {:dataloader, "~> 1.0.0"},
+      {:comeonin, "~> 5.1"},
+      {:pbkdf2_elixir, "~> 1.0"}
     ]
   end
 

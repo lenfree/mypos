@@ -21,6 +21,7 @@ defmodule MyposWeb.Schema do
 
   import_types(__MODULE__.ProductTypes)
   import_types(__MODULE__.OrderingTypes)
+  import_types(__MODULE__.AccountsTypes)
 
   def context(ctx) do
     loader =
@@ -87,6 +88,13 @@ defmodule MyposWeb.Schema do
     field :complete_order, :order_result do
       arg(:id, non_null(:id))
       resolve(&Resolvers.Ordering.complete_order/3)
+    end
+
+    field :login, :session do
+      arg(:email, non_null(:string))
+      arg(:password, non_null(:string))
+      arg(:role, non_null(:role))
+      resolve(&Resolvers.Accounts.login/3)
     end
   end
 
