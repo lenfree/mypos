@@ -11,6 +11,7 @@ defmodule MyposWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug MyposWeb.Context
   end
 
   scope "/" do
@@ -19,7 +20,6 @@ defmodule MyposWeb.Router do
 
     forward("/graphiql", Absinthe.Plug.GraphiQL,
       schema: MyposWeb.Schema,
-      interface: :simple,
       socket: MyposWeb.UserSocket
     )
   end

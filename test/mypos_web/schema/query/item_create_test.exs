@@ -33,7 +33,8 @@ defmodule MyposWeb.Schema.Mutation.ItemCreateTest do
   }
   """
   test "create item with category id", %{category: category} do
-    conn = build_conn()
+    user = Factory.create_user("employee")
+    conn = build_conn() |> auth_user(user)
 
     conn =
       post(conn, "/api",
@@ -63,5 +64,41 @@ defmodule MyposWeb.Schema.Mutation.ItemCreateTest do
                }
              }
            }
+  end
+
+  test "must be authorized as an employee to do menu item creation", %{category: category} do
+    user = Factory.create_user("customer")
+    conn = build_conn() |> auth_user(user)
+
+    conn =
+      post(conn, "/api",
+        query: @query,
+        variables: %{
+          "input" => %{
+            "categoryId" => category.id,
+            "description" => "a kind of bread",
+            "name" => "pan coco",
+            "price" => "50"
+          }
+        }
+      )
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "createItem" => nil
+             },
+             "errors" => [
+               %{
+                 "locations" => [%{"column" => 0, "line" => 2}],
+                 "message" => "unauthorized",
+                 "path" => ["createItem"]
+               }
+             ]
+           }
+  end
+
+  def auth_user(conn, user) do
+    token = MyposWeb.Authentication.sign(%{role: user.role, id: user.id})
+    put_req_header(conn, "authorization", "Bearer #{token}")
   end
 end
