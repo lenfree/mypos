@@ -7,7 +7,6 @@ defmodule Mypos.Accounts do
 
   def authenticate(role, email, password) do
     user = Repo.get_by(User, role: to_string(role), email: email)
-
     with %{password_hash: digest} <- user,
          true <- Pbkdf2.verify_pass(password, digest) do
       {:ok, user}

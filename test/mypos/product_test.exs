@@ -10,15 +10,6 @@ defmodule Mypos.ProductTest do
     @update_attrs %{description: "some updated description", name: "some updated name"}
     @invalid_attrs %{description: nil, name: nil}
 
-    def category_fixture(attrs \\ %{}) do
-      {:ok, category} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Product.create_category()
-
-      category
-    end
-
     test "list_categories/0 returns all categories" do
       category = category_fixture()
       assert Product.list_categories() == [category]
@@ -80,15 +71,6 @@ defmodule Mypos.ProductTest do
       price: 43
     }
     @invalid_attrs %{added_on: nil, description: nil, name: nil, price: nil}
-
-    def item_fixture(attrs \\ %{}) do
-      {:ok, item} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Product.create_item()
-
-      item
-    end
 
     test "list_items/0 returns all items" do
       category = category_fixture(%{name: "hello"})

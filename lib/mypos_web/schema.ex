@@ -43,6 +43,30 @@ defmodule MyposWeb.Schema do
   end
 
   mutation do
+    field :login, :session do
+      arg(:email, non_null(:string))
+      arg(:password, non_null(:string))
+      arg(:role, non_null(:role))
+      resolve(&Resolvers.Accounts.login/3)
+
+      middleware(fn res, _ ->
+        with %{value: %{user: user}} <- res do
+          %{res | context: Map.put(res.context, :current_user, user)}
+        end
+      end)
+    end
+
+    field :logout, :query do
+      middleware(fn res, _ ->
+        %{
+          res
+          | context: Map.delete(res.context, :current_user),
+            value: "logged out",
+            state: :resolved
+        }
+      end)
+    end
+
     field :create_category_item, :category_item_result do
       arg(:input, :category_item_input)
       resolve(&Resolvers.Product.category_create/3)
@@ -61,6 +85,7 @@ defmodule MyposWeb.Schema do
 
     field :create_item, :item_result do
       arg(:input, :item_input)
+      middleware(Middleware.Authorize, "employee")
       resolve(&Resolvers.Product.item_create/3)
     end
 
@@ -77,6 +102,7 @@ defmodule MyposWeb.Schema do
 
     field(:place_order, :order_result) do
       arg(:input, non_null(:place_order_input))
+      middleware(Middleware.Authorize, :any)
       resolve(&Resolvers.Ordering.create_order/3)
     end
 
@@ -87,27 +113,30 @@ defmodule MyposWeb.Schema do
 
     field :complete_order, :order_result do
       arg(:id, non_null(:id))
+      middleware(Middleware.Authorize, :any)
       resolve(&Resolvers.Ordering.complete_order/3)
-    end
-
-    field :login, :session do
-      arg(:email, non_null(:string))
-      arg(:password, non_null(:string))
-      arg(:role, non_null(:role))
-      resolve(&Resolvers.Accounts.login/3)
     end
   end
 
   subscription do
     field :new_order, :order do
-      config(fn _args, _info ->
-        {:ok, topic: "*"}
+      config(fn _args, %{context: context} ->
+        case context[:current_user] do
+          %{role: "customer", id: id} ->
+            {:ok, topic: id}
+
+          %{role: "employee"} ->
+            {:ok, topic: "*"}
+
+          _ ->
+            {:ok, topic: "*"}
+        end
       end)
 
       trigger([:place_order],
         topic: fn
-          %{order: _order} ->
-            ["*"]
+          %{order: order} ->
+            ["*", order.customer_number]
 
           _ ->
             []

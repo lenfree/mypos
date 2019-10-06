@@ -26,6 +26,6 @@ defmodule MyposWeb.SubscriptionCase do
 
   # handy function for grabbing a fixture
   def menu_item(name) do
-    Mypos.Repo.get_by!(Mypos.Menu.Item, name: name)
+    Mypos.Repo.get_by!(Mypos.Product.Item, name: name)
   end
 end

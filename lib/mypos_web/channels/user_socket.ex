@@ -1,5 +1,6 @@
 defmodule MyposWeb.UserSocket do
   use Phoenix.Socket
+
   use Absinthe.Phoenix.Socket, schema: MyposWeb.Schema
   ## Channels
   # channel "room:*", MyposWeb.RoomChannel
@@ -15,7 +16,21 @@ defmodule MyposWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket, _connect_info) do
+  def connect(params, socket, _connect_info) do
+    # This is enabled to allow token/user auth context for graphiql only.
+    # Please see https://github.com/absinthe-graphql/absinthe_plug/issues/137
+    # for explanation and implementation is an example from below
+    # https://github.com/absinthe-graphql/absinthe/blob/master/guides/subscriptions.md
+    # TODO: Please fix redundant functions on line 50 and 62.
+    user = build_context(params)
+
+    socket =
+      Absinthe.Phoenix.Socket.put_options(socket,
+        context: %{
+          current_user: user
+        }
+      )
+
     {:ok, socket}
   end
 
@@ -30,4 +45,25 @@ defmodule MyposWeb.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   def id(_socket), do: nil
+
+  defp build_context(params) do
+    case Map.has_key?(params, "Authorization") do
+      true ->
+        with "Bearer " <> token = params["Authorization"],
+             {:ok, data} <- MyposWeb.Authentication.verify(token),
+             %{} = user <- get_user(data) do
+          user
+        else
+          _ ->
+            ""
+        end
+
+      _ ->
+        ""
+    end
+  end
+
+  defp get_user(%{id: id, role: role}) do
+    Mypos.Accounts.lookup(role, id)
+  end
 end

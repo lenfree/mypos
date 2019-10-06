@@ -35,18 +35,12 @@ defmodule MyposWeb.Resolvers.Product do
     {:ok, %{items: Product.list_items()}}
   end
 
-  def item_create(_, %{input: params}, %{context: context}) do
-    case context do
-      %{current_user: %{role: "employee"}} ->
-        with {:ok, item} <- Product.create_item(params) do
-          {
-            :ok,
-            %{item: item}
-          }
-        end
-
-      _ ->
-        {:error, "unauthorized"}
+  def item_create(_, %{input: params}, _resolution) do
+    with {:ok, item} <- Product.create_item(params) do
+      {
+        :ok,
+        %{item: item}
+      }
     end
   end
 

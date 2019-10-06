@@ -1,8 +1,17 @@
 defmodule MyposWeb.Resolvers.Ordering do
   alias Mypos.Ordering
 
-  def create_order(_, %{input: params}, _) do
-    with {:ok, order} <- Ordering.create_order(params) do
+  def create_order(_, %{input: place_order_input}, %{context: context}) do
+    place_order_input =
+      case context[:current_user] do
+        %{role: "customer", id: id} ->
+          Map.put(place_order_input, :customer_number, id)
+
+        _ ->
+          place_order_input
+      end
+
+    with {:ok, order} <- Ordering.create_order(place_order_input) do
       {:ok, %{order: order}}
     end
   end

@@ -9,14 +9,18 @@ defmodule MyposWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
+  pipeline :graphql do
     plug MyposWeb.Context
   end
 
   scope "/" do
-    pipe_through(:api)
-    forward("/api", Absinthe.Plug, schema: MyposWeb.Schema)
+    pipe_through(:graphql)
+
+    forward(
+      "/api",
+      Absinthe.Plug,
+      schema: MyposWeb.Schema
+    )
 
     forward("/graphiql", Absinthe.Plug.GraphiQL,
       schema: MyposWeb.Schema,
