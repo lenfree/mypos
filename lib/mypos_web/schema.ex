@@ -22,6 +22,7 @@ defmodule MyposWeb.Schema do
   import_types(__MODULE__.ProductTypes)
   import_types(__MODULE__.OrderingTypes)
   import_types(__MODULE__.AccountsTypes)
+  import_types(Absinthe.Phoenix.Types)
 
   def context(ctx) do
     loader =

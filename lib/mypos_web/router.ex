@@ -28,6 +28,12 @@ defmodule MyposWeb.Router do
     )
   end
 
+  scope "/admin", MyposWeb do
+    pipe_through(:browser)
+
+    resources "/items", ItemController
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", MyposWeb do
   #   pipe_through :api
