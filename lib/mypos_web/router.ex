@@ -9,6 +9,10 @@ defmodule MyposWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :admin_auth do
+    plug MyposWeb.AdminAuth
+  end
+
   pipeline :graphql do
     plug MyposWeb.Context
   end
@@ -30,6 +34,14 @@ defmodule MyposWeb.Router do
 
   scope "/admin", MyposWeb do
     pipe_through(:browser)
+
+    resources "/session", SessionController,
+      only: [:new, :create, :delete],
+      singleton: true
+  end
+
+  scope "/admin", MyposWeb do
+    pipe_through [:browser, :admin_auth]
 
     resources "/items", ItemController
   end
